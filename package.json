@@ -2,11 +2,13 @@
   "name": "finance-backend",
   "type": "module",
   "scripts": {
+    "seed:admin": "tsx src/database/seeds/seedAdmin.ts",
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/src/server.js"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "dotenv": "^17.4.0",
     "express": "^5.2.1",
     "pg": "^8.20.0",
@@ -14,6 +16,7 @@
     "sequelize": "^6.37.8"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.6",
     "@types/node": "^25.5.0",
     "ts-node-dev": "^2.0.0",
