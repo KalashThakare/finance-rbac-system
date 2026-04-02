@@ -1,7 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
-import { initModels } from "./database/index.js";
-import session from "express-session";
+import { sessionMiddleware } from "./config/session.js";
+import userRoutes from "./api/users/users.route.js";
+import authRoutes from "./api/auth/auth.route.js";
 
 dotenv.config();
 
@@ -9,21 +10,9 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(session({
-    secret: process.env.SESSION_SECRET as string,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        secure: false,
-        httpOnly: true,
-        maxAge: 1000 * 60 * 60,
-    }
-}));
+app.use(sessionMiddleware);
 
-initModels();
-
-app.get("/", (req, res) => {
-    res.send("Server testing .........")
-});
+app.use("/users", userRoutes);
+app.use("/auth", authRoutes);
 
 export default app;

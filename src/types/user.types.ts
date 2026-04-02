@@ -4,8 +4,8 @@ import { Optional } from "sequelize";
 
 export enum UserRole {
     ADMIN = "admin",
-    EDITOR = "editor",
-    USER = "user",
+    VIEWER = "viewer",
+    ANALYST = "analyst",
 }
 
 export enum UserStatus {
@@ -17,13 +17,13 @@ export enum UserStatus {
 // attributes
 
 export interface UserAttributes {
-    id: number;
+    id: string;
     name: string;
     email: string;
     password: string;
     role: UserRole;
     status: UserStatus;
-    createdBy: number;
+    createdBy: string;
     createdAt?: Date;
     updatedAt?: Date;
 }
@@ -34,12 +34,12 @@ export interface UserCreationAttributes
 // response
 
 export interface UserResponse {
-    id: number;
+    id: string;
     name: string;
     email: string;
     role: UserRole;
     status: UserStatus;
-    createdBy: number;
+    createdBy: string;
     createdAt: Date;
 }
 

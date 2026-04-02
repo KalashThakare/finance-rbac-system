@@ -1,20 +1,24 @@
 import sequelize from "../config/db.js";
 import { defineUserModel } from "../api/users/users.model.js";
 
+const modelDefiners = [
+    defineUserModel,
+];
+
 export const initModels = () => {
-    defineUserModel(sequelize);
+    modelDefiners.forEach((define) => define(sequelize));
 };
 
 export const syncModels = async (): Promise<void> => {
-    const models = Object.values(sequelize.models);
+    const isDev = process.env.NODE_ENV === "development";
 
-    await Promise.all(
-        models.map((model) =>
-            model.sync({ alter: true }).then(() =>
-                console.log(`${model.name} synced.`)
-            )
-        )
-    );
+    try {
+        await sequelize.sync({ alter: isDev, logging: false });
+        console.log("All models synced.");
+    } catch (error) {
+        console.error("Model sync failed:", error);
+        throw error;
+    }
 };
 
 export { sequelize };

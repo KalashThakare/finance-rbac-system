@@ -31,7 +31,7 @@ async function seedAdmin() {
             password: hashedPassword,
             role: UserRole.ADMIN,
             status: UserStatus.ACTIVE,
-            createdBy: 1,
+            createdBy: "00000000-0000-0000-0000-000000000000",
         });
         console.log("admin created successfully.");
 
