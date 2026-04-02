@@ -56,6 +56,16 @@ export interface CreateUserBody {
 export interface UpdateUserBody {
     name?: string;
     email?: string;
-    role?: UserRole;
-    status?: UserStatus;
 }
+
+export interface UpdateStatusBody {
+    status: UserStatus;
+}
+
+export interface UpdateRoleBody {
+    role: UserRole;
+}
+
+export interface UpdatePasswordBody {
+    password: string;
+}   
