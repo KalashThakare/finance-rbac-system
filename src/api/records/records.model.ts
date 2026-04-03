@@ -13,6 +13,8 @@ export class FinancialRecord extends Model<FinancialRecordAttributes, FinancialR
     declare readonly updatedAt: Date;
 }
 
+export const RECORD_ATTRIBUTE = ["id", "amount", "type", "category", "date", "description", "createdBy"];
+
 export function defineFinancialRecordModel(sequelize: Sequelize) {
     FinancialRecord.init(
         {

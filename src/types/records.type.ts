@@ -50,3 +50,4 @@ export interface UpdateRecordBody {
     date?: Date;
     description?: string;
 }
+
