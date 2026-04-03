@@ -8,16 +8,18 @@ import { validate } from "../../middlewares/validate.js";
 
 const router = express.Router();
 
-router.post("/create", authenticate, authorize([UserRole.ADMIN]), validate(createUserSchema), createUser);
+router.use(authenticate);
 
-router.get("/", authenticate, authorize([UserRole.ADMIN]), getUsers);
+router.post("/create", authorize([UserRole.ADMIN]), validate(createUserSchema), createUser);
 
-router.put("/update-status/:id", authenticate, authorize([UserRole.ADMIN]), validate(updateStatusSchema), updateStatus);
+router.get("/", authorize([UserRole.ADMIN]), getUsers);
 
-router.put("/update-role/:id", authenticate, authorize([UserRole.ADMIN]), validate(updateRoleSchema), updateRole);
+router.put("/update-status/:id", authorize([UserRole.ADMIN]), validate(updateStatusSchema), updateStatus);
 
-router.put("/reset-password", authenticate, authorize([UserRole.ADMIN, UserRole.ANALYST, UserRole.VIEWER]), validate(resetPasswordSchema), resetPassword);
+router.put("/update-role/:id", authorize([UserRole.ADMIN]), validate(updateRoleSchema), updateRole);
 
-router.get("/:id", authenticate, authorize([UserRole.ADMIN, UserRole.ANALYST, UserRole.VIEWER]), getUserById);
+router.put("/reset-password", authorize([UserRole.ADMIN, UserRole.ANALYST, UserRole.VIEWER]), validate(resetPasswordSchema), resetPassword);
+
+router.get("/:id", authorize([UserRole.ADMIN, UserRole.ANALYST, UserRole.VIEWER]), getUserById);
 
 export default router;

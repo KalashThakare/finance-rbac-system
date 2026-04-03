@@ -102,3 +102,22 @@ export const updateRecord = async (req:Request, res:Response): Promise<Response>
         return handleError(error, res);
     }
 }
+
+export const deleteRecord = async (req:Request, res:Response): Promise<Response> =>{
+    try {
+        const id = req.params.id as string;
+
+        const record = await FinancialRecord.findByPk(id);
+
+        if(!record){
+            throw new AppError("record dosen't exist", 404 );
+        }
+
+        await record.destroy();
+
+        return res.status(200).json({ message: "Record deleted successfully" });    
+
+    } catch (error) {
+        return handleError(error, res);
+    }
+}
