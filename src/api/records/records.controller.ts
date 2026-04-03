@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { FinancialRecord, RECORD_ATTRIBUTE } from "./records.model.js";
-import { CreateRecordBody } from "../../types/records.type.js";
+import { CreateRecordBody, UpdateRecordBody } from "../../types/records.type.js";
 import { handleError } from "../../utils/errorHandler.js";
 import { AppError } from "../../utils/errors.js";
 import { Pagination } from "../../utils/pagination.js";
@@ -76,3 +76,29 @@ export const viewAllRecords = async (req: Request, res: Response): Promise<Respo
         return handleError(error, res);
     }
 };
+
+export const updateRecord = async (req:Request, res:Response): Promise<Response> =>{
+    try {
+        const id = req.params.id as string;
+        const body: UpdateRecordBody = req.body;
+
+        const record = await FinancialRecord.findByPk(id);
+
+        if(!record){
+            throw new AppError("record dosen't exist", 404 );
+        }
+
+        record.amount = body.amount ?? record.amount;
+        record.type = body.type ?? record.type;
+        record.category = body.category ?? record.category;
+        record.date = body.date ?? record.date;
+        record.description = body.description ?? record.description;
+
+        await record.save();
+
+        return res.status(200).json({ message: "Record updated successfully", record });    
+
+    } catch (error) {
+        return handleError(error, res);
+    }
+}
