@@ -1,8 +1,10 @@
 import sequelize from "../config/db.js";
 import { defineUserModel } from "../api/users/users.model.js";
+import { defineFinancialRecordModel } from "../api/records/records.model.js";
 
 const modelDefiners = [
     defineUserModel,
+    defineFinancialRecordModel,
 ];
 
 export const initModels = () => {

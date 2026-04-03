@@ -9,8 +9,8 @@ export class User extends Model<UserAttributes, UserCreationAttributes> {
     declare role: UserRole;
     declare status: UserStatus;
     declare createdBy: string;
-    declare createdAt: Date;
-    declare updatedAt: Date;
+    declare readonly createdAt: Date;
+    declare readonly updatedAt: Date;
 }
 
 export function defineUserModel(sequelize: Sequelize) {
