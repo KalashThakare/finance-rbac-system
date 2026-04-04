@@ -1,5 +1,5 @@
 import express from "express";
-import { overview } from "./dashboard.controller.js";
+import { getCategoryBreakdown, getDashboard, getOverview, getRecentActivity, getTrends } from "./dashboard.controller.js";
 import { authenticate } from "../../middlewares/authenticate.js";
 import { authorize } from "../../middlewares/authorize.js";
 import { UserRole } from "../../types/user.types.js";
@@ -7,8 +7,11 @@ import { UserRole } from "../../types/user.types.js";
 const router = express.Router();
 
 router.use(authenticate);
-router.use(authorize([UserRole.ADMIN, UserRole.ANALYST]))
 
-router.get("/", overview);
+router.get("/", authorize([UserRole.ADMIN, UserRole.ANALYST]), getDashboard);
+router.get("/summary", authorize([UserRole.ADMIN, UserRole.ANALYST]), getOverview);
+router.get("/categories", authorize([UserRole.ADMIN, UserRole.ANALYST]), getCategoryBreakdown);
+router.get("/trends", authorize([UserRole.ADMIN, UserRole.ANALYST]), getTrends);
+router.get("/recent", authorize([UserRole.ADMIN, UserRole.ANALYST, UserRole.VIEWER]), getRecentActivity);
 
-export default router;      
+export default router;
