@@ -37,7 +37,7 @@ export const getCategoryBreakdownData = async(query: RecordFilterQuery) =>{
 
     const whereClause = recordFilter(query);
 
-    const breakdown = FinancialRecord.findAll({
+    const breakdown = await FinancialRecord.findAll({
         where: whereClause,
         attributes:[
             "category",
@@ -46,7 +46,7 @@ export const getCategoryBreakdownData = async(query: RecordFilterQuery) =>{
             [fn("COUNT", col("id")), "count"],
         ],
         group: ["category", "type"],
-        order: [[literal("total"), "DESC"]],
+        order: [[fn("SUM", col("amount")), "DESC"]],
         raw: true
     }) as unknown as { category: string; type: string; total: string; count: string }[];
 

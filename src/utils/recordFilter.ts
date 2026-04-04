@@ -4,7 +4,7 @@ import { AppError } from "./errors.js";
 
 export interface RecordFilterQuery {
     type?: string;
-    category?: string;
+    category?: string | string[];
     startDate?: string;
     endDate?: string;
     minAmount?: string;
@@ -16,16 +16,23 @@ export const recordFilter = (query: RecordFilterQuery) => {
 
     // Type filter
     if (query.type) {
-        if (!Object.values(RecordType).includes(query.type as RecordType)) {
+        const type = query.type.trim().toLowerCase();
+        if (!Object.values(RecordType).includes(type as RecordType)) {
             throw new AppError("Invalid type. Must be 'income' or 'expense'", 400);
         }
-        whereClause.type = query.type;
+        whereClause.type = type;
     }
 
-    // Category filter 
+    // Category filter
     if (query.category) {
+    if (Array.isArray(query.category)) {
+        whereClause.category = {
+            [Op.in]: query.category.map(c => c.trim().toLowerCase())
+        };
+    } else {
         whereClause.category = query.category.trim().toLowerCase();
     }
+}
 
     // Date range filter
     if (query.startDate || query.endDate) {
