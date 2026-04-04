@@ -4,6 +4,7 @@ import { sessionMiddleware } from "./config/session.js";
 import userRoutes from "./api/users/users.route.js";
 import authRoutes from "./api/auth/auth.route.js";
 import recordRoutes from "./api/records/records.route.js";
+import dashboardRoutes from "./api/dashboard/dashboard.route.js"
 
 dotenv.config();
 
@@ -16,5 +17,6 @@ app.use(sessionMiddleware);
 app.use("/users", userRoutes);
 app.use("/auth", authRoutes);
 app.use("/records", recordRoutes);
+app.use("/dashboard", dashboardRoutes)
 
 export default app;
