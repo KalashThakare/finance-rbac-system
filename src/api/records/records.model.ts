@@ -8,12 +8,12 @@ export class FinancialRecord extends Model<FinancialRecordAttributes, FinancialR
     declare category: string;
     declare date: Date;
     declare description: string;
-    declare createdBy: string;
+    declare createdBy: string | null;
     declare readonly createdAt: Date;
     declare readonly updatedAt: Date;
 }
 
-export const RECORD_ATTRIBUTE = ["id", "amount", "type", "category", "date", "description", "createdBy"];
+export const RECORD_ATTRIBUTE = ["id", "amount", "type", "category", "date", "description", "createdBy", "createdAt"];
 
 export function defineFinancialRecordModel(sequelize: Sequelize) {
     FinancialRecord.init(
@@ -41,17 +41,30 @@ export function defineFinancialRecordModel(sequelize: Sequelize) {
             },
             description: {
                 type: DataTypes.STRING,
-                allowNull: false,
+                allowNull: true,          
             },
             createdBy: {
                 type: DataTypes.UUID,
-                allowNull: false,
+                allowNull: true,                      
+                references: {
+                    model: "users",
+                    key: "id",
+                },
+                onDelete: "SET NULL",                   
+                onUpdate: "CASCADE",
             },
         },
         {
             sequelize,
             tableName: "records",
+            indexes: [
+                { fields: ["createdBy"] },
+                { fields: ["type"] },           
+                { fields: ["category"] },         
+                { fields: ["date"] },     
+                { fields: ["type", "category"] },       
+                { fields: ["type", "date"] },
+            ],
         }
-    )
+    );
 }
-

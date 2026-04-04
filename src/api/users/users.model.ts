@@ -52,6 +52,9 @@ export function defineUserModel(sequelize: Sequelize) {
         {
             sequelize,
             tableName: "users",
+            indexes: [
+                { unique: true, fields: ["email"] },
+            ],
         }
     );
 }
