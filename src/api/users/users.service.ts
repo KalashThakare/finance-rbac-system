@@ -1,5 +1,6 @@
 import { User } from "./users.model.js";
 import { UserRole, UserStatus, UserResponse } from "../../types/user.types.js";
+import { AppError } from "../../utils/errors.js";
 
 // Helper
 
@@ -86,4 +87,42 @@ export const resetPasswordService = async (id: string, hashedPassword: string): 
     user.password = hashedPassword;
 
     await user.save();
+};
+
+// Soft Delete-----
+
+export const deleteUserService = async (id: string): Promise<void> => {
+    const user = await User.findByPk(id);
+    if (!user) throw new AppError("User not found", 404);
+
+    await user.destroy();
+};
+
+export const restoreUserService = async (id: string): Promise<UserResponse> => {
+    
+    const user = await User.findOne({
+        where: { id },
+        paranoid: false,                
+    });
+
+    if (!user) throw new AppError("User not found", 404);
+    if (!user.deletedAt) throw new AppError("User is not deleted", 400);
+
+    await user.restore();
+
+    return formatUser(user);
+};
+
+// Hard Delete-----
+
+export const hardDeleteUserService = async (id: string): Promise<void> => {
+
+    const user = await User.findOne({
+        where: { id },
+        paranoid: false,             
+    });
+
+    if (!user) throw new AppError("User not found", 404);
+
+    await user.destroy({ force: true }); 
 };

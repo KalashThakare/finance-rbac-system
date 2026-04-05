@@ -3,7 +3,7 @@ import { UserRole, UserStatus, UpdatePasswordBody, UpdateRoleBody, UpdateStatusB
 import { handleError } from "../../utils/errorHandler.js";
 import { AppError } from "../../utils/errors.js";
 import bcrypt from "bcrypt";
-import { checkUserExists, createUserService, getUserByIdService, getUsersService, resetPasswordService, updateRoleService, updateStatusService } from "./users.service.js";
+import { checkUserExists, createUserService, deleteUserService, getUserByIdService, getUsersService, hardDeleteUserService, resetPasswordService, restoreUserService, updateRoleService, updateStatusService } from "./users.service.js";
 
 export const createUser = async (req: Request, res: Response): Promise<Response> => {
     try {
@@ -113,6 +113,48 @@ export const resetPassword = async (req: Request, res: Response): Promise<Respon
         await resetPasswordService(userId, hashedPassword);
 
         return res.status(200).json({ message: "Password reset successfully" });
+    } catch (error) {
+        return handleError(error, res);
+    }
+};
+
+export const softDeleteUser = async (req: Request, res: Response): Promise<Response> => {
+    try {
+
+        const id = req.params.id as string;
+        
+        await deleteUserService(id);
+        
+        return res.status(200).json({ message: "User deleted successfully" });
+    
+    } catch (error) {
+        return handleError(error, res);
+    }
+};
+
+export const restoreUser = async (req: Request, res: Response): Promise<Response> => {
+    try {
+
+        const id = req.params.id as string;
+        
+        const user = await restoreUserService(id);
+        
+        return res.status(200).json({ message: "User restored successfully", user });
+    
+    } catch (error) {
+        return handleError(error, res);
+    }
+};
+
+export const hardDeleteUser = async (req: Request, res: Response): Promise<Response> => {
+    try {
+
+        const id = req.params.id as string;
+        
+        await hardDeleteUserService(id);
+        
+        return res.status(200).json({ message: "User permanently deleted" });
+    
     } catch (error) {
         return handleError(error, res);
     }

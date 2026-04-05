@@ -1,7 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { UserStatus } from "../types/user.types.js";
+import { User } from "../api/users/users.model.js";
 
-export const authenticate = (req: Request, res: Response, next: NextFunction): void => {
+export const authenticate = async (req: Request, res: Response, next: NextFunction):Promise<void> => {
     try {
         if (!req.session) {
             res.status(401).json({ message: "No session found." });
@@ -10,6 +11,13 @@ export const authenticate = (req: Request, res: Response, next: NextFunction): v
 
         if (!req.session.user) {
             res.status(401).json({ message: "Unauthorized. Please login." });
+            return;
+        }
+
+        const user = await User.findByPk(req.session.user.id);
+        if (!user) {
+            req.session.destroy(() => {});
+            res.status(401).json({ message: "Account no longer exists." });
             return;
         }
 

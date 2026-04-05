@@ -9,6 +9,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> {
     declare role: UserRole;
     declare status: UserStatus;
     declare createdBy: string;
+    declare deletedAt?: Date | null;
     declare readonly createdAt: Date;
     declare readonly updatedAt: Date;
 }
@@ -48,10 +49,16 @@ export function defineUserModel(sequelize: Sequelize) {
                 type: DataTypes.UUID,
                 allowNull: false,
             },
+            deletedAt: {
+                type: DataTypes.DATE,
+                allowNull: true,
+                defaultValue: null,
+            },
         },
         {
             sequelize,
             tableName: "users",
+            paranoid:true,
             indexes: [
                 { unique: true, fields: ["email"] },
             ],

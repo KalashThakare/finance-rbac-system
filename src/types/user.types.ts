@@ -25,6 +25,7 @@ export interface UserAttributes {
     status: UserStatus;
     createdBy: string;
     createdAt?: Date;
+    deletedAt?: Date | null;
     updatedAt?: Date;
 }
 
