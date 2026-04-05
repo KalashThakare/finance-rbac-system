@@ -9,6 +9,7 @@ export class FinancialRecord extends Model<FinancialRecordAttributes, FinancialR
     declare date: Date;
     declare description: string;
     declare createdBy: string | null;
+    declare deletedAt: string | null;
     declare readonly createdAt: Date;
     declare readonly updatedAt: Date;
 }
@@ -53,10 +54,16 @@ export function defineFinancialRecordModel(sequelize: Sequelize) {
                 onDelete: "SET NULL",                   
                 onUpdate: "CASCADE",
             },
+            deletedAt:{
+                type: DataTypes.DATE,
+                allowNull: true,
+                defaultValue: null,
+            }
         },
         {
             sequelize,
             tableName: "records",
+            paranoid: true,
             indexes: [
                 { fields: ["createdBy"] },
                 { fields: ["type"] },           

@@ -1,10 +1,13 @@
 import { FinancialRecord, RECORD_ATTRIBUTE } from "./records.model.js";
-import { CreateRecordBody, UpdateRecordBody } from "../../types/records.type.js";
+import { CreateRecordBody, PaginatedRecordQuery, PaginatedResult, UpdateRecordBody } from "../../types/records.type.js";
 import { AppError } from "../../utils/errors.js";
 import { Pagination } from "../../utils/pagination.js";
-import { recordFilter, RecordFilterQuery } from "../../utils/recordFilter.js";
+import { recordFilter } from "../../utils/recordFilter.js";
+import { Op } from "sequelize";
+import { validateFoundIds } from "../../utils/validateId.js";
 
-export const createRecordService = async (body: CreateRecordBody, userId: string) => {
+
+export const createRecordService = async (body: CreateRecordBody, userId: string): Promise<FinancialRecord> => {
 
     const record = await FinancialRecord.create({
         amount: body.amount,
@@ -18,7 +21,7 @@ export const createRecordService = async (body: CreateRecordBody, userId: string
     return record;
 };
 
-export const viewRecordByIdService = async (id: string) => {
+export const viewRecordByIdService = async (id: string): Promise<FinancialRecord> => {
 
     const record = await FinancialRecord.findByPk(id, {
         attributes: RECORD_ATTRIBUTE,
@@ -32,7 +35,7 @@ export const viewRecordByIdService = async (id: string) => {
 
 };
 
-export const viewAllRecordsService = async (query: RecordFilterQuery & { page?: unknown; limit?: unknown }) => {
+export const viewAllRecordsService = async (query: PaginatedRecordQuery ):Promise<PaginatedResult> => {
 
     const { parsedPage, parsedLimit, offset } = Pagination(query.page, query.limit);
 
@@ -57,7 +60,7 @@ export const viewAllRecordsService = async (query: RecordFilterQuery & { page?: 
     };
 };
 
-export const updateRecordService = async (id: string, body: UpdateRecordBody) => {
+export const updateRecordService = async (id: string, body: UpdateRecordBody): Promise<FinancialRecord> => {
 
     const record = await FinancialRecord.findByPk(id);
 
@@ -85,11 +88,63 @@ export const updateRecordService = async (id: string, body: UpdateRecordBody) =>
     return record;
 };
 
-export const deleteRecordService = async (id: string) => {
+export const softDeleteRecordService = async (ids: string[]): Promise<number> => {
+    
+    const records = await FinancialRecord.findAll({
+        where: { id: { [Op.in]: ids } },
+    });
 
-    const record = await FinancialRecord.findByPk(id);
+    if (records.length === 0) throw new AppError("No records found", 404);
 
-    if (!record) throw new AppError("Record not found", 404);
+    validateFoundIds(ids, records.map(r => r.id));
 
-    await record.destroy();
+    await FinancialRecord.destroy({
+        where: { id: { [Op.in]: ids } },
+    });
+
+    return ids.length;
+};
+
+export const restoreRecordService = async (ids: string[]): Promise<number> => {
+
+    const records = await FinancialRecord.findAll({
+        where: { id: { [Op.in]: ids } },
+        paranoid: false,
+    });
+
+    if (records.length === 0) throw new AppError("No records found", 404);
+
+    validateFoundIds(ids, records.map(r => r.id));
+
+    const notDeletedIds = records
+        .filter(r => !r.deletedAt)
+        .map(r => r.id);
+    if (notDeletedIds.length > 0) {
+        throw new AppError(`Records are not deleted: ${notDeletedIds.join(", ")}`, 400);
+    }
+
+    await FinancialRecord.restore({
+        where: { id: { [Op.in]: ids } },
+    });
+
+    return ids.length;
+};
+
+export const hardDeleteRecordService = async (ids: string[]): Promise<number> => {
+
+    const records = await FinancialRecord.findAll({
+        where: { id: { [Op.in]: ids } },
+        paranoid: false,
+    });
+
+    if (records.length === 0) throw new AppError("No records found", 404);
+
+    validateFoundIds(ids, records.map(r => r.id));
+
+    await FinancialRecord.destroy({
+        where: { id: { [Op.in]: ids } },
+        force: true,
+    });
+
+    return ids.length;
 };
