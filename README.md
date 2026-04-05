@@ -48,16 +48,51 @@ The system manages financial records and users across three roles admin, analyst
 The project follows a layered architecture with clear separation between routing, business logic, and data access.
 ```
 src/
-├── api/
-│   ├── auth/           # Login, logout, session
-│   ├── users/          # User management
-│   ├── records/        # Financial records
-│   └── dashboard/      # Analytics and summaries
-├── config/             # DB, session, rate limiter
-├── database/           # Sequelize init, seeds
-├── middlewares/        # authenticate, authorize, validate
-├── types/              # Shared TypeScript types
-└── utils/              # Error handling, pagination, filters
+├── api/                              # Route modules — controller, model, route, schema, service
+│   ├── auth/
+│   │   ├── auth.controller.ts        # Login and logout handlers
+│   │   └── auth.route.ts             # Auth routes with rate limiter
+│   ├── dashboard/
+│   │   ├── dashboard.controller.ts   # Dashboard request handlers
+│   │   ├── dashboard.route.ts        # Dashboard routes with role guards
+│   │   └── dashboard.service.ts      # Aggregation queries — overview, trends, categories, activity
+│   ├── records/
+│   │   ├── records.controller.ts     # Record request handlers
+│   │   ├── records.model.ts          # FinancialRecord Sequelize model
+│   │   ├── records.route.ts          # Record routes with role guards
+│   │   ├── records.schema.ts         # Zod validation schemas for records
+│   │   └── records.service.ts        # Record business logic and DB queries
+│   └── users/
+│       ├── users.controller.ts       # User request handlers
+│       ├── users.model.ts            # User Sequelize model
+│       ├── users.route.ts            # User routes with role guards
+│       ├── users.schema.ts           # Zod validation schemas for users
+│       └── users.service.ts          # User business logic and DB queries
+├── config/
+│   ├── db.ts                         # Sequelize instance and DB connection
+│   ├── rateLimiter.ts                # General and auth rate limiter config
+│   └── session.ts                    # Express session middleware config
+├── database/
+│   ├── seeds/
+│   │   ├── seedAdmin.ts              # Creates initial admin user
+│   │   └── seedRecords.ts            # Seeds sample financial records for testing
+│   └── index.ts                      # Model registration and sync
+├── middlewares/
+│   ├── authenticate.ts               # Checks active session
+│   ├── authorize.ts                  # Checks user role against allowed roles
+│   └── validate.ts                   # Applies Zod schema validation to request body
+├── types/
+│   ├── express.d.ts                  # Extends Express Request with session user type
+│   ├── records.type.ts               # Types and enums for financial records
+│   └── user.types.ts                 # Types, enums, and interfaces for users
+├── utils/
+│   ├── errorHandler.ts               # Centralised error response handler
+│   ├── errors.ts                     # AppError class with status code
+│   ├── pagination.ts                 # Pagination helper — page, limit, offset
+│   ├── recordFilter.ts               # Builds Sequelize where clause from query params
+│   └── validateId.ts                 # Validates all requested IDs exist before mutation
+├── app.ts                            # Express app setup — middleware and routes
+└── server.ts                         # Server startup — DB connect, model sync, listen
 ```
 
 Every protected route passes through two middlewares — `authenticate` (checks session) and `authorize` (checks role). Validation is handled via Zod schemas applied through a `validate` middleware before the request reaches the controller.
