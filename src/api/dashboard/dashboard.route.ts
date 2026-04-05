@@ -9,7 +9,7 @@ const router = express.Router();
 router.use(authenticate);
 
 router.get("/", authorize([UserRole.ADMIN, UserRole.ANALYST]), getDashboard);
-router.get("/summary", authorize([UserRole.ADMIN, UserRole.ANALYST]), getOverview);
+router.get("/summary", authorize([UserRole.ADMIN, UserRole.ANALYST, UserRole.VIEWER]), getOverview);
 router.get("/categories", authorize([UserRole.ADMIN, UserRole.ANALYST]), getCategoryBreakdown);
 router.get("/trends", authorize([UserRole.ADMIN, UserRole.ANALYST]), getTrends);
 router.get("/recent", authorize([UserRole.ADMIN, UserRole.ANALYST, UserRole.VIEWER]), getRecentActivity);
