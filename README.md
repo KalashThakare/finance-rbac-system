@@ -9,7 +9,7 @@ The system manages financial records and users across three roles admin, analyst
 > **API Documentation**
 
 > Full documentation including request bodies, response shapes, validation rules, and example requests is available in the Postman workspace.
-> [Open Postman Workspace →](https://www.postman.com/test99-2945/workspace/finance-rbac-api)
+> [Open Postman Workspace →](https://documenter.getpostman.com/view/37406945/2sBXiqEUKp)
 
 ---
 
