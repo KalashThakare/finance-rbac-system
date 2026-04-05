@@ -105,10 +105,16 @@ ADMIN_EMAIL=your_email
 ADMIN_PASS=your_password
 ```
 ```bash
-yarn seed:admin   # creates the initial admin user
-yarn dev          # starts the server on port 8080
+yarn seed       # creates admin user and seeds sample financial records
+yarn dev        # starts the server on http://localhost:8080
 ```
 
+**Default admin credentials:**
+
+| Field | Value |
+| --- | --- |
+| Email | `admin@company.com` |
+| Password | `admin123` |
 ---
 
 ## Key Design Decisions
