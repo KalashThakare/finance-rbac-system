@@ -100,9 +100,6 @@ PORT=8080
 NODE_ENV=development
 DATABASE_URI=your_postgres_connection_string
 SESSION_SECRET=your_session_secret
-ADMIN_NAME=your_name
-ADMIN_EMAIL=your_email
-ADMIN_PASS=your_password
 ```
 ```bash
 yarn seed       # creates admin user and seeds sample financial records
