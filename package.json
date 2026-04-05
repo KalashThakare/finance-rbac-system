@@ -3,6 +3,8 @@
   "type": "module",
   "scripts": {
     "seed:admin": "tsx src/database/seeds/seedAdmin.ts",
+    "seed:records": "tsx src/database/seeds/seedRecords.ts",
+    "seed": "yarn seed:admin && yarn seed:records",
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/src/server.js"

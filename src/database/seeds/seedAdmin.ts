@@ -21,27 +21,35 @@ async function seedAdmin() {
         });
 
         if (admin) {
-            console.log("admin already exists.");
+            console.log("Admin already exists. Skipping seed.");
             return;
         }
-        const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASS as string, 12);
+
+        const name = process.env.ADMIN_NAME || "Admin";
+        const email = process.env.ADMIN_EMAIL || "admin@company.com";
+        const password = process.env.ADMIN_PASS || "admin123";
+
+        const hashedPassword = await bcrypt.hash(password, 12);
+
         await User.create({
-            name: process.env.ADMIN_NAME as string,
-            email: process.env.ADMIN_EMAIL as string,
+            name,
+            email,
             password: hashedPassword,
             role: UserRole.ADMIN,
             status: UserStatus.ACTIVE,
             createdBy: "00000000-0000-0000-0000-000000000000",
         });
-        console.log("admin created successfully.");
+
+        console.log(`Admin created successfully.`);
+        console.log(`Email: ${email}`);
+        console.log(`Password: ${password}`);
 
     } catch (error) {
-        console.error("seed failed", error);
+        console.error("Seed failed:", error);
         process.exit(1);
     } finally {
-        sequelize.close();
+        await sequelize.close();
     }
-
 }
 
-seedAdmin();    
+seedAdmin();
