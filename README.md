@@ -9,7 +9,7 @@ The system manages financial records and users across three roles admin, analyst
 > **API Documentation**
 
 > Full documentation including request bodies, response shapes, validation rules, and example requests is available in the Postman workspace.
-> [Open Postman API Documentation →](https://documenter.getpostman.com/view/37406945/2sBXiqEUKp)
+> [Open Postman API Documentation →](https://test-659559.docs.buildwithfern.com/api-documentation/introduction)
 
 ---
 
